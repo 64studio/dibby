@@ -1,0 +1,19 @@
+info()
+{
+	echo "I: pdk2: $*"
+}
+
+warn()
+{
+	echo "W: pdk2: $*"
+}
+
+error()
+{
+	echo "E: pdk2: $*"
+}
+
+chroot_exec()
+{
+	LANG=C LC_ALL=C DEBIAN_FRONTEND=noninteractive chroot ${ROOTFS} $*
+}

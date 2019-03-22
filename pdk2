@@ -1,0 +1,147 @@
+#!/usr/bin/env bash
+#
+# Copyright (C) 2018 Christopher Obbard <chris@64studio.com>
+#
+#
+
+# command-line arguments
+WORKSPACE="$1"
+CONFIG="$WORKSPACE/$2"
+IMAGE="$WORKSPACE/$3"
+
+# full path to build env
+BUILDENV="$WORKSPACE/tmp"
+
+# full path to the rootfs
+ROOTFS="$BUILDENV/rootfs"
+
+# full path to this script
+SCRIPTPATH="$(cd "$(dirname "$0")"; pwd -P)"
+
+# include functions
+source $SCRIPTPATH/functions
+
+# check root is running the script
+if [ $EUID -ne 0 ]; then
+	error "you must run as root"
+	exit 1
+fi
+
+# check workspace exists
+if [ ! -d $WORKSPACE ]; then
+	error "cannot find workspace"
+	exit 1
+fi
+
+# read config file
+if [ ! -f $CONFIG ]; then
+	error "cannot find config"
+	exit 1
+fi
+source $CONFIG
+
+
+
+ROOTSIZE=1500
+BOOTSIZE=64
+IMAGE_TMP="$BUILDENV/output.img"
+
+
+
+
+
+# purge old build env
+rm -rf $IMAGE_TMP
+rm -rf $BUILDENV
+mkdir -p $BUILDENV
+
+# create blank image $ROOTSIZE blocks long
+info "creating blank image"
+dd if=/dev/zero of=$IMAGE_TMP bs=1MiB count=$ROOTSIZE >& /dev/null
+
+# create partition table
+#
+#  first 2kb bootloader & partition table,
+#  next ${BOOTSIZE} mb FAT32,
+#  rest of disk rootfs
+info "creating filesystems"
+fdisk $IMAGE_TMP &>/dev/null << EOF
+n
+p
+1
+2048
++${BOOTSIZE}M
+t
+c
+a
+1
+n
+p
+2
+
+
+w
+EOF
+
+# create device map
+info "creating loop device"
+DEVICE=`kpartx -a -v $IMAGE_TMP | sed -E 's/.*(loop[0-9])p.*/\1/g' | head -1`
+sleep 1
+
+DEVICE_BOOTFS="/dev/mapper/${DEVICE}p1"
+DEVICE_ROOTFS="/dev/mapper/${DEVICE}p2"
+info "created loop device $DEVICE"
+
+# format
+info "formatting filesystems"
+mkfs.vfat $DEVICE_BOOTFS >& /dev/null
+mkfs.ext4 $DEVICE_ROOTFS >& /dev/null
+
+# mount
+info "mounting rootfs"
+mkdir -p $ROOTFS
+mount $DEVICE_ROOTFS $ROOTFS
+
+mkdir -p ${ROOTFS}/boot
+mount $DEVICE_BOOTFS ${ROOTFS}/boot
+
+# do evil things to the rootfs here
+
+# loop over all of the task scripts
+# TODO choose task scripts to run in config
+for SHELL_SCRIPT in $SCRIPTPATH/tasks/*.sh; do
+	# get the name of the script without the full path
+	SHELL_SCRIPT_NAME=$(echo $SHELL_SCRIPT | rev | cut -d "/" -f1 | rev)
+	echo "--------------------------------"
+	info "running task: $SHELL_SCRIPT_NAME"
+	source "$SHELL_SCRIPT"
+done
+
+# stop the doing evil things to the rootfs here
+
+# unmount
+info "cleaning up"
+info "unmounting rootfs"
+cd $SCRIPTPATH
+sleep 2
+umount $DEVICE_BOOTFS
+umount $DEVICE_ROOTFS
+
+# remove the device maps
+info "removing loop devices"
+kpartx -d $IMAGE_TMP >& /dev/null
+sleep 2
+
+# move the image from the tmp dir to the workspace
+# TODO: don't do this if it has failed
+mv "$IMAGE_TMP" "$IMAGE"
+
+# change ownership back to calling user
+chown $SUDO_USER:$SUDO_USER "$IMAGE"
+
+# purge the tmp dir
+rm -rf $BUILDENV
+
+# exit
+info "completed!"
+exit 0
