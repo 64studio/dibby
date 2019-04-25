@@ -1,0 +1,26 @@
+Source: dibby
+Section: devel
+Priority: optional
+Maintainer: Christopher Obbard <chris@64studio.com>
+Uploaders: Daniel James <daniel@64studio.com>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 4.3.0
+Homepage: https://github.com/64studio/dibby
+Vcs-Git: https://github.com/64studio/dibby.git
+Vcs-Browser: https://github.com/64studio/dibby
+
+Package: dibby
+Architecture: all
+Depends: debootstrap,
+         dosfstools,
+         kpartx,
+         qemu-user-static,
+         whois,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Recommends: git,
+            make,
+            sudo
+Description: Debian Image Builder
+ Generate Custom Debian images for various 
+ embedded projects.
