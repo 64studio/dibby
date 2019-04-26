@@ -14,5 +14,8 @@ info "Debootstrapping system (second-stage)"
 chroot_exec /debootstrap/debootstrap --second-stage
 
 # debug if second-stage failed
-# TODO check file exists & quit if so...
-cp $ROOTFS/debootstrap/debootstrap.log $WORKSPACE/debootstrap.log
+# TODO quit if a genuine failure. check debootstrap exit code?
+if [ -f $ROOTFS/debootstrap/debootstrap.log ]; then
+	warning "Debootstrap may have failed. See debootstrap.log in workspace."
+	cp $ROOTFS/debootstrap/debootstrap.log $WORKSPACE/debootstrap.log
+fi
