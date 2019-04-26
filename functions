@@ -1,16 +1,16 @@
 info()
 {
-	echo "I: pdk2: $*"
+	echo "I: dibby: $*"
 }
 
 warn()
 {
-	echo "W: pdk2: $*"
+	echo "W: dibby: $*"
 }
 
 error()
 {
-	echo "E: pdk2: $*"
+	echo "E: dibby: $*"
 }
 
 chroot_exec()
