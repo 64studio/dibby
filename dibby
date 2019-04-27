@@ -34,7 +34,7 @@ if [ ! -d $WORKSPACE ]; then
 fi
 
 # read default config file options
-source $SCRIPTPATH/functions
+source $SCRIPTPATH/default-config
 
 # read config file options
 if [ ! -f $CONFIG ]; then
