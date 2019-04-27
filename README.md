@@ -49,6 +49,9 @@ CONFIG_PRESEED="preseed.conf"
 CONFIG_POSTINST="postinst.sh"
 ```
 
+see the file `default-config` for the available options.
+
+
 3. The _image_ is the filename of the custom Debian image you will create with dibby.
 
 For example, from the directory where the `dibby` script is installed:

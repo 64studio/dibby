@@ -110,13 +110,12 @@ mount $DEVICE_BOOTFS ${ROOTFS}/boot
 
 # do evil things to the rootfs here
 
-# loop over all of the task scripts
-# TODO choose task scripts to run in config
-for SHELL_SCRIPT in $SCRIPTPATH/tasks/*.sh; do
+# loop over all of the bootstrap scripts
+for SHELL_SCRIPT in $SCRIPTPATH/bootstrap/*.sh; do
 	# get the name of the script without the full path
-	SHELL_SCRIPT_NAME=$(echo $SHELL_SCRIPT | rev | cut -d "/" -f1 | rev)
+	#SHELL_SCRIPT_NAME=$(echo $SHELL_SCRIPT | rev | cut -d "/" -f1 | rev)
 	echo "--------------------------------"
-	info "running task: $SHELL_SCRIPT_NAME"
+	info "running $SHELL_SCRIPT"
 	source "$SHELL_SCRIPT"
 done
 
