@@ -47,6 +47,8 @@ CONFIG_HOSTNAME="myhostname"
 CONFIG_ROOT_PASSWORD="myrootpassword"
 CONFIG_PRESEED="preseed.conf"
 CONFIG_POSTINST="postinst.sh"
+CONFIG_CUSTOM_PACKAGES="jackd2"
+CONFIG_CUSTOM_TASKS="openssh-server"
 ```
 
 see the file `default-config` for the available options.
