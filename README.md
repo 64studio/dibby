@@ -16,6 +16,16 @@ By default, dibby is configured to build [ARM](https://www.debian.org/ports/arm/
 
 You can run the scripts from a checked-out copy of the [git repository for dibby](https://github.com/64studio/dibby) or install a Debian package from the [64 Studio apt server](https://apt.64studio.net/).
 
+The following instructions install the latest release and has been tested on Debian Stretch and Sid.
+
+```
+$ sudo apt install apt-transport-https
+$ echo 'deb https://apt.64studio.net stretch main' | sudo tee /etc/apt/sources.list.d/64studio.list
+$ wget -qO - https://apt.64studio.net/archive-keyring.asc | sudo apt-key add -
+$ sudo apt update
+$ sudo apt install dibby           
+```
+
 ## How to use dibby
 
 The `dibby` script has three command line arguments, corresponding in turn to the script variables `$WORKSPACE`, `$CONFIG` and `$IMAGE`. 
