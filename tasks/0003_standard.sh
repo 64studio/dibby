@@ -13,5 +13,6 @@
 #chroot_exec apt-key list
 
 # generate locales
+# TODO this requires the locale package is installed
 echo "en_GB.UTF-8 UTF-8" > $ROOTFS/etc/locale.gen
 chroot_exec locale-gen
