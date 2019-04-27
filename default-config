@@ -1,0 +1,13 @@
+# this configuration file contains sane defaults which are overriten by the project
+
+# debootstrap options
+CONFIG_DEBOOTSTRAP_MIRROR="http://deb.debian.org/debian"
+CONFIG_DEBOOTSTRAP_SUITE="buster"
+CONFIG_DEBOOTSTRAP_EXCLUDE="tasksel, tasksel-data"
+
+# project options
+CONFIG_ARCH="armhf"
+CONFIG_HOSTNAME="dibby"
+CONFIG_ROOT_PASSWORD="toor"
+#CONFIG_PRESEED=""
+#CONFIG_POSTINST=""

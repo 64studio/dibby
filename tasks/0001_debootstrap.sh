@@ -1,15 +1,13 @@
 # debootstrap a basic Debian system
-# TODO check installed packages, dont think tasksel is needed
+# TODO check minimal packages
 info "Debootstrapping system (first-stage)"
-MIRROR="http://deb.debian.org/debian"
-EXCLUDE="tasksel, tasksel-data"
-debootstrap --foreign --arch="$CONFIG_ARCH" --exclude="$EXCLUDE" buster "$ROOTFS" "$MIRROR"
+debootstrap --foreign --arch="$CONFIG_ARCH" --exclude="$CONFIG_DEBOOTSTRAP_EXCLUDE" "$CONFIG_DEBOOTSTRAP_SUITE" "$ROOTFS" "$CONFIG_DEBOOTSTRAP_MIRROR"
 
 # TODO support multi-arch
-# copy in the ARM static binary (so we can chroot)
+# copy in the ARM static binary to chroot
 cp /usr/bin/qemu-arm-static $ROOTFS/usr/bin/
 
-# actually install the packages
+# install the packages
 info "Debootstrapping system (second-stage)"
 chroot_exec /debootstrap/debootstrap --second-stage
 

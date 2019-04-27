@@ -33,7 +33,10 @@ if [ ! -d $WORKSPACE ]; then
 	exit 1
 fi
 
-# read config file
+# read default config file options
+source $SCRIPTPATH/functions
+
+# read config file options
 if [ ! -f $CONFIG ]; then
 	error "cannot find config"
 	exit 1

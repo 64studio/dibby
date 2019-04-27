@@ -1,3 +1,4 @@
 tasks usr/share/dibby
+default-config usr/share/dibby
 dibby usr/share/dibby
 functions usr/share/dibby
