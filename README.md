@@ -62,14 +62,19 @@ Please see the file [default-config](https://github.com/64studio/dibby/blob/mast
 
 3. The _image_ is the filename of the custom Debian image you will create with dibby.
 
-For example, from the directory where the `dibby` script is installed (installed to `/usr/share/dibby/` when using the Debian package of dibby), we can create `mydebian.img` in the directory `~/myproject` using the configuration file `~/myproject/myconfig` as follows:
+### Your first dibby build
+
+From the directory where the `dibby` script is installed (installed to `/usr/share/dibby/` when using the Debian package of dibby), we can create `mydebian.img` in the directory `~/myproject` using the configuration file `~/myproject/myconfig` as follows:
 
 ```
 mkdir ~/myproject
 nano ~/myproject/myconfig
 (set any custom configuration options)
-./dibby ~/myproject ~/myproject/myconfig mydebian.img
+sudo ./dibby ~/myproject myconfig mydebian.img
 ```
+Please be aware that the step _Unpacking the base system..._ can take a long time, depending on the speed of your build machine. 
+
+### Creating unique images
 
 By using different options for these command line arguments, you can create a variety of custom Debian images independently of the current state of your dibby project.
 
