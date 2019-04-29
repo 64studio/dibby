@@ -1,4 +1,4 @@
-# this configuration file contains sane defaults which are overriten by the project
+# this file contains sane defaults which can be overwritten by the dibby project config file
 
 # debootstrap options
 CONFIG_DEBOOTSTRAP_MIRROR="http://deb.debian.org/debian"
