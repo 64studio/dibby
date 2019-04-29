@@ -30,16 +30,10 @@ mkdir -p "$ROOTFS/mnt/workspace"
 mount --bind "$WORKSPACE" "$ROOTFS/mnt/workspace"
 
 # setup apt repository
-# TODO configure from upstream location
-cat << EOF > /etc/apt/sources.list
-deb http://deb.debian.org/debian/ testing main contrib non-free
-deb-src http://deb.debian.org/debian/ testing main contrib non-free
-
-deb http://deb.debian.org/debian/ testing-updates main contrib non-free
-deb-src http://deb.debian.org/debian/ testing-updates main contrib non-free
-
-deb http://deb.debian.org/debian-security testing/updates main
-deb-src http://deb.debian.org/debian-security testing/updates main
+# TODO include security & update suites
+cat << EOF > $ROOTFS/etc/apt/sources.list
+deb $CONFIG_DEBOOTSTRAP_MIRROR $CONFIG_DEBOOTSTRAP_SUITE main contrib non-free
+deb-src $CONFIG_DEBOOTSTRAP_MIRROR $CONFIG_DEBOOTSTRAP_SUITE main contrib non-free
 EOF
 
 # do not install recommended packages
