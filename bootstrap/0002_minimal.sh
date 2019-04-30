@@ -30,10 +30,16 @@ mkdir -p "$ROOTFS/mnt/workspace"
 mount --bind "$WORKSPACE" "$ROOTFS/mnt/workspace"
 
 # setup apt repository
-# TODO include security & update suites
+info "Setting up APT for $CONFIG_DEBOOTSTRAP_MIRROR"
 cat << EOF > $ROOTFS/etc/apt/sources.list
 deb $CONFIG_DEBOOTSTRAP_MIRROR $CONFIG_DEBOOTSTRAP_SUITE main contrib non-free
 deb-src $CONFIG_DEBOOTSTRAP_MIRROR $CONFIG_DEBOOTSTRAP_SUITE main contrib non-free
+
+deb $CONFIG_DEBOOTSTRAP_MIRROR $CONFIG_DEBOOTSTRAP_SUITE-updates main contrib non-free
+deb-src $CONFIG_DEBOOTSTRAP_MIRROR $CONFIG_DEBOOTSTRAP_SUITE-updates main contrib non-free
+
+deb http://deb.debian.org/debian-security $CONFIG_DEBOOTSTRAP_SUITE/updates main
+deb-src http://deb.debian.org/debian-security $CONFIG_DEBOOTSTRAP_SUITE/updates main
 EOF
 
 # do not install recommended packages
