@@ -23,7 +23,7 @@ source $SCRIPTPATH/functions
 
 # check root is running the script
 if [ $EUID -ne 0 ]; then
-	error "you must run as root"
+	error "you must run as root or use sudo"
 	exit 1
 fi
 
@@ -31,6 +31,8 @@ fi
 if [ ! -d $WORKSPACE ]; then
 	error "cannot find workspace"
 	exit 1
+else
+	info "workspace is $WORKSPACE"
 fi
 
 # read default config file options
@@ -40,10 +42,13 @@ source $SCRIPTPATH/default-config
 if [ ! -f $CONFIG ]; then
 	error "cannot find config"
 	exit 1
+else
+	info "configuration file is $CONFIG"
 fi
 source $CONFIG
 
-
+info "image to be built is $IMAGE"
+info "Debian mirror is $CONFIG_DEBOOTSTRAP_MIRROR"
 
 ROOTSIZE=1500
 BOOTSIZE=64
