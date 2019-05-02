@@ -9,7 +9,7 @@
 
 `dibby` is the **d**ebian **i**mage **b**uilder **by** chris, a collection of shell scripts which can be used for creating minimal custom [Debian](https://www.debian.org/) images containing only the packages that you specify, any dependencies those packages need, and unique configurations for deployment.
 
-By default, dibby is configured to build [ARM](https://www.debian.org/ports/arm/) images for devices such as the Raspberry Pi 3 on an amd64 host using [QEMU](https://www.qemu.org/), as that is the way we use it at [64 Studio](https://64studio.com/).
+By default, dibby is configured to build [ARM](https://www.debian.org/ports/arm/) images for devices such as the Raspberry Pi 3 on a Debian amd64 host using [QEMU](https://www.qemu.org/), as that is the way we use it at [64 Studio](https://64studio.com/).
 
 ## How to install dibby
 
@@ -17,11 +17,11 @@ You can run the scripts from a copy of our Git repository or install a Debian pa
 
 ### Install from git
 
-When clone from the [Git repository for dibby](https://github.com/64studio/dibby) you will need to install the following dependencies manually:
+Before running a copy of dibby obtained from the [Git repository for dibby](https://github.com/64studio/dibby) you will need to install the following dependencies from Debian manually:
 
 `sudo apt install debootstrap dosfstools kpartx libpwquality-tools qemu-user-static whois`
 
-Then clone the sources directly, or from your own fork, into your home directory. For example:
+Then clone the dibby sources directly, or from your own fork, into your home directory. For example:
 
 ```
 cd ~
