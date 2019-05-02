@@ -13,9 +13,25 @@ By default, dibby is configured to build [ARM](https://www.debian.org/ports/arm/
 
 ## How to install dibby
 
-You can run the scripts from a checked-out copy of the [Git repository for dibby](https://github.com/64studio/dibby) or install a Debian package from the [64 Studio APT server](https://apt.64studio.net/). If you are interested in developing dibby or adapting it for your needs, we recommend forking the Git version.
+You can run the scripts from a copy of our Git repository or install a Debian package from the 64 Studio APT server. If you are interested in developing dibby or adapting it for your needs, we recommend forking the Git version.
 
-The following instructions install the latest release of dibby from our APT server, and have been tested on Debian Stretch and Sid:
+### Install from git
+
+When clone from the [Git repository for dibby](https://github.com/64studio/dibby) you will need to install the following dependencies manually:
+
+`sudo apt install debootstrap dosfstools kpartx libpwquality-tools qemu-user-static whois`
+
+Then clone the sources directly, or from your own fork, into your home directory. For example:
+
+```
+cd ~
+git clone https://github.com/64studio/dibby.git
+cd dibby
+```
+
+### Install from Debian package
+
+The following instructions install the latest release of dibby from the [64 Studio APT server](https://apt.64studio.net/), and have been tested on Debian Stretch and Sid:
 
 ```
 sudo apt install apt-transport-https
