@@ -67,8 +67,7 @@ info "testing the root password set for the image..."
 PASSWORD_STRENGTH=$( echo $CONFIG_ROOT_PASSWORD | pwscore )
 
 if [ -z "$PASSWORD_STRENGTH" ]; then
-	error "please set a strong root password for the image and try again!"
-	exit 1
+	error "please set a strong root password for the image!"
 else
 	info "image root password strength is $PASSWORD_STRENGTH out of 100"
 fi
