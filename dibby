@@ -55,16 +55,21 @@ else
 fi
 source $CONFIG
 
+# check the root password for the target image
+if [ -z $CONFIG_ROOT_PASSWORD ]; then
+	error "you must set a root password for the image"
+	exit 1
+fi
+
 info "image to be built is $IMAGE"
 info "Debian mirror is $CONFIG_DEBOOTSTRAP_MIRROR"
+info "suite is $CONFIG_DEBOOTSTRAP_SUITE"
+info "architecture is $CONFIG_ARCH"
+info "target hostname is $CONFIG_HOSTNAME"
 
 ROOTSIZE=1500
 BOOTSIZE=64
 IMAGE_TMP="$BUILDENV/output.img"
-
-
-
-
 
 # purge old build env
 rm -rf $IMAGE_TMP
