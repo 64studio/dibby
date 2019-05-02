@@ -29,18 +29,28 @@ iface eth0 inet dhcp" >> $ROOTFS/etc/network/interfaces
 mkdir -p "$ROOTFS/mnt/workspace"
 mount --bind "$WORKSPACE" "$ROOTFS/mnt/workspace"
 
-# setup apt repository
+# setup main apt repository
 info "Setting up APT for $CONFIG_DEBOOTSTRAP_MIRROR"
 cat << EOF > $ROOTFS/etc/apt/sources.list
 deb $CONFIG_DEBOOTSTRAP_MIRROR $CONFIG_DEBOOTSTRAP_SUITE main contrib non-free
 deb-src $CONFIG_DEBOOTSTRAP_MIRROR $CONFIG_DEBOOTSTRAP_SUITE main contrib non-free
+EOF
 
+if [ $CONFIG_DEBOOTSTRAP_SUITE = "buster" ] ||
+   [ $CONFIG_DEBOOTSTRAP_SUITE = "stretch" ] ||
+   [ $CONFIG_DEBOOTSTRAP_SUITE = "testing" ] ||
+   [ $CONFIG_DEBOOTSTRAP_SUITE = "stable" ]
+then
+   # setup additional apt repositories
+   info "Adding update and debian-security repositories"
+   cat << EOF >> $ROOTFS/etc/apt/sources.list
 deb $CONFIG_DEBOOTSTRAP_MIRROR $CONFIG_DEBOOTSTRAP_SUITE-updates main contrib non-free
 deb-src $CONFIG_DEBOOTSTRAP_MIRROR $CONFIG_DEBOOTSTRAP_SUITE-updates main contrib non-free
 
 deb http://deb.debian.org/debian-security $CONFIG_DEBOOTSTRAP_SUITE/updates main
 deb-src http://deb.debian.org/debian-security $CONFIG_DEBOOTSTRAP_SUITE/updates main
 EOF
+fi
 
 # do not install recommended packages
 # TODO remove after?
