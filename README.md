@@ -16,7 +16,6 @@ By default, dibby is configured to build [ARM](https://www.debian.org/ports/arm/
 You can run the scripts from a checked-out copy of the [Git repository for dibby](https://github.com/64studio/dibby) or install a Debian package from the [64 Studio APT server](https://apt.64studio.net/). If you are interested in developing dibby or adapting it for your needs, we recommend forking the Git version.
 
 The following instructions install the latest release of dibby from our APT server, and have been tested on Debian Stretch and Sid:
-
 ```
 sudo apt install apt-transport-https
 echo 'deb https://apt.64studio.net stretch main' | sudo tee /etc/apt/sources.list.d/64studio.list
@@ -36,10 +35,9 @@ sudo dpkg -i ../dibby_*_all.deb
 
 The `dibby` script has three command line arguments, corresponding in turn to the script variables `$WORKSPACE`, `$CONFIG` and `$IMAGE`. 
 
-1. The _workspace_ is a directory on your local system which will contain your dibby project. This directory needs to be created before you run `dibby` for the first time.
+1. The _workspace_ is a directory on your local system which will contain your dibby project. This directory needs to be created before you run `dibby` for the first time. The workspace directory is kept separate from dibby itself, so your workspace can be public or private, depending on your project requirements. A dibby workspace can be developed collaboratively using your own git repository, if you wish.
 
 2. The _config_ file is where you set the options for the target systems which will boot your dibby project image. This includes the CPU architecture for your dibby project, as well as the initial hostname and root password of the target devices. This file also enables you to specify a Debian preseed file and post-installation script, a custom package selection and custom tasks, using the following format:
-
 ```
 CONFIG_ARCH="armhf"
 CONFIG_HOSTNAME="myhostname"
@@ -51,28 +49,27 @@ CONFIG_CUSTOM_TASKS="openssh-server"
 ```
 
 You can also pass options to `debootstrap` from the dibby project config file, including the mirror to obtain the Debian packages from, the base Debian suite for your project, and any Debian packages to exclude from the build:
-
 ```
 CONFIG_DEBOOTSTRAP_MIRROR="http://deb.debian.org/debian"
 CONFIG_DEBOOTSTRAP_SUITE="buster"
 CONFIG_DEBOOTSTRAP_EXCLUDE="tasksel, tasksel-data"
 ```
 
-Please see the file [default-config](https://github.com/64studio/dibby/blob/master/default-config) for the current default options.
+Please see the file [default-config](https://github.com/64studio/dibby/blob/master/default-config) for the current default options. You can set defaults for all your dibby projects in your local copy of this file, if that suits your needs.
 
 3. The _image_ is the filename of the custom Debian image you will create with dibby.
 
 ### Your first dibby build
 
 From the directory where the `dibby` script is installed (installed to `/usr/share/dibby/` when using the Debian package of dibby), we can create `mydebian.img` in the directory `~/myproject` using the configuration file `~/myproject/myconfig` as follows:
-
 ```
 mkdir ~/myproject
 nano ~/myproject/myconfig
 (set any custom configuration options)
 sudo ./dibby ~/myproject myconfig mydebian.img
 ```
-Please be aware that the step _Unpacking the base system..._ can take a long time, depending on the speed of your build machine. 
+
+Please be aware that the step _Unpacking the base system..._ can take a long time, depending on the speed of your build host. 
 
 ### Creating unique images
 
@@ -82,13 +79,17 @@ For example, you might wish to create a series of up-to-date Debian images which
 
 ### The tasks directory
 
-The purpose of tasks in dibby is to set up modular components containing Debian packages and configurations for them that work well together, without having to specify each package and configuration option every time you create a new dibby project. Inside the _tasks_ directory (installed to `/usr/share/dibby/tasks/` when using the Debian package of dibby) you will find a number of scripts which are run from the main `dibby` script. You can use these ready made task scripts, or create as many new tasks as you need.
+The purpose of tasks in dibby is to set up modular components containing Debian packages and configurations for them that work well together, without having to specify each package and configuration option every time you create a new dibby project. Inside the _tasks_ directory (installed to `/usr/share/dibby/tasks/` when using the Debian package of dibby) you will find scripts which are run from the main `dibby` script. You can use these ready-made task scripts as they are, modify them, or create as many new tasks as you need.
 
-For example, during the development phase of your dibby project, you might wish to include an OpenSSH server in your build for remote root access to the target device. A script called `openssh-server.sh` is included in the _tasks_ directory for this purpose. If your project is ready to deploy without requiring remote root access any longer, you can modify this particular task script to comment out the parts you no longer need. This is the line of the task script which enables remote root login over SSH:
+For example, during the development phase of your dibby project, you might wish to include an OpenSSH server in your build with remote root access by password to the target device. A script called `openssh-server.sh` is included in the _tasks_ directory for this purpose. (This approach is a more modular alternative to using `d-i preseed/late_command` in the preseed file, one which enables you to put your hacks for a particular package in the same task script which selects that package).
+
+If your project is ready to deploy images with `openssh-server` but you no longer require remote root access, you can modify this particular task script to comment out the parts you no longer need. This is the line of the task script which enables remote root login over SSH using a password:
 
 `sed -i -e 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' $ROOTFS/etc/ssh/sshd_config`
 
-This modification to the task script would normally be tracked in your project git repository, so you can approve this specific change to the build or revert it later if necessary.
+Please note the use of the dibby variable `$ROOTFS` to ensure that the task script is modifying the filesystem of the target image, and not the build host.
+
+When working on a dibby project collaboratively, any modification to a task script can be tracked in a git repository for your own fork of dibby, so you can approve this specific change to the build or revert it later if necessary. We welcome contributions of task scripts which would be helpful for other dibby users.
 
 ## Support
 
