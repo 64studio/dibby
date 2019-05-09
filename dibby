@@ -61,6 +61,17 @@ if [ -z $CONFIG_ROOT_PASSWORD ]; then
 	exit 1
 fi
 
+# check the strength of the root password with cracklib
+info "testing the root password set for the image..."
+
+PASSWORD_STRENGTH=$( echo $CONFIG_ROOT_PASSWORD | pwscore )
+
+if [ -z "$PASSWORD_STRENGTH" ]; then
+	error "please set a strong root password for the image!"
+else
+	info "image root password strength is $PASSWORD_STRENGTH out of 100"
+fi
+
 info "image to be built is $IMAGE"
 info "Debian mirror is $CONFIG_DEBOOTSTRAP_MIRROR"
 info "suite is $CONFIG_DEBOOTSTRAP_SUITE"
