@@ -24,11 +24,16 @@ sudo apt update
 sudo apt install dibby
 ```
 
-To create your own Debian package from the Git source code and install that package locally, you can use these commands:
+To create your own Debian package from the Git source code and install that package locally with dependency resolution, you can use these commands:
 ```
 cd dibby
 dpkg-buildpackage --no-sign
-sudo dpkg -i ../dibby_*_all.deb
+sudo gdebi -i ../dibby_*_all.deb
+```
+
+If you are running dibby direct from this Git repository, you will need to install its dependencies manually:
+```
+sudo apt install debootstrap dosfstools kpartx libpwquality-tools qemu-user-static
 ```
 
 ## How to use dibby
