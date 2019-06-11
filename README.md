@@ -33,7 +33,7 @@ sudo gdebi -i ../dibby_*_all.deb
 
 If you are running dibby direct from this Git repository, you will need to install its dependencies manually:
 ```
-sudo apt install debootstrap dosfstools kpartx libpwquality-tools qemu-user-static
+sudo apt install debootstrap dosfstools kpartx libpwquality-tools qemu-user-static whois
 ```
 
 ## How to use dibby
