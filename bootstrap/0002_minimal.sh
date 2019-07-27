@@ -1,4 +1,5 @@
 # hostname
+info "Setting hostname to $CONFIG_HOSTNAME"
 echo "$CONFIG_HOSTNAME" > $ROOTFS/etc/hostname
 
 # hosts file
@@ -29,11 +30,21 @@ iface eth0 inet dhcp" >> $ROOTFS/etc/network/interfaces
 mkdir -p "$ROOTFS/mnt/workspace"
 mount --bind "$WORKSPACE" "$ROOTFS/mnt/workspace"
 
-# setup main apt repository
+# setup main apt and dibby repositories
 info "Setting up APT for $CONFIG_DEBOOTSTRAP_MIRROR"
 cat << EOF > $ROOTFS/etc/apt/sources.list
 deb $CONFIG_DEBOOTSTRAP_MIRROR $CONFIG_DEBOOTSTRAP_SUITE main contrib non-free
 deb-src $CONFIG_DEBOOTSTRAP_MIRROR $CONFIG_DEBOOTSTRAP_SUITE main contrib non-free
+
+deb https://apt.64studio.net/dibby $CONFIG_DEBOOTSTRAP_SUITE main
+deb-src https://apt.64studio.net/dibby $CONFIG_DEBOOTSTRAP_SUITE main
+EOF
+
+cat << EOF > $ROOTFS/etc/apt/preferences
+
+     Package: *
+     Pin: origin "apt.64studio.net"
+     Pin-Priority: 1001
 EOF
 
 if [ $CONFIG_DEBOOTSTRAP_SUITE = "buster" ] ||
@@ -41,15 +52,37 @@ if [ $CONFIG_DEBOOTSTRAP_SUITE = "buster" ] ||
    [ $CONFIG_DEBOOTSTRAP_SUITE = "testing" ] ||
    [ $CONFIG_DEBOOTSTRAP_SUITE = "stable" ]
 then
-   # setup additional apt repositories
+   # setup additional Debian apt repositories
    info "Adding update and debian-security repositories"
    cat << EOF >> $ROOTFS/etc/apt/sources.list
+
 deb $CONFIG_DEBOOTSTRAP_MIRROR $CONFIG_DEBOOTSTRAP_SUITE-updates main contrib non-free
 deb-src $CONFIG_DEBOOTSTRAP_MIRROR $CONFIG_DEBOOTSTRAP_SUITE-updates main contrib non-free
 
 deb http://deb.debian.org/debian-security $CONFIG_DEBOOTSTRAP_SUITE/updates main
 deb-src http://deb.debian.org/debian-security $CONFIG_DEBOOTSTRAP_SUITE/updates main
 EOF
+fi
+
+# setup custom apt repository and pin it to high priority
+if [ -n "$CONFIG_CUSTOM_MIRROR" ]; then
+
+info "Setting up APT for $CONFIG_CUSTOM_MIRROR"
+cat << EOF >> $ROOTFS/etc/apt/sources.list
+
+deb $CONFIG_CUSTOM_MIRROR $CONFIG_DEBOOTSTRAP_SUITE main
+deb-src $CONFIG_CUSTOM_MIRROR $CONFIG_DEBOOTSTRAP_SUITE main
+EOF
+
+CONFIG_CUSTOM_ORIGIN=$(echo $CONFIG_CUSTOM_MIRROR | sed 's;https://;;' | sed 's;http://;;' | sed 's;ftp://;;')
+
+cat << EOF >> $ROOTFS/etc/apt/preferences
+
+     Package: *
+     Pin: origin "$CONFIG_CUSTOM_ORIGIN"
+     Pin-Priority: 1002
+EOF
+
 fi
 
 # do not install recommended packages

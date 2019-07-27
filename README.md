@@ -42,7 +42,7 @@ The `dibby` script has three command line arguments, corresponding in turn to th
 
 1. The _workspace_ is a directory on your local system which will contain your dibby project. This directory needs to be created before you run `dibby` for the first time. The workspace directory is kept separate from dibby itself, so your workspace can be public or private, depending on your project requirements. A dibby workspace can be developed collaboratively using your own git repository, if you wish.
 
-2. The _config_ file is where you set the options for the target systems which will boot your dibby project image. This includes the CPU architecture for your dibby project, as well as the initial hostname and root password of the target devices. This file also enables you to specify a Debian preseed file and post-installation script, a custom package selection and custom tasks, using the following format:
+2. The _config_ file is where you set the options for the target systems which will boot your dibby project image. This includes the CPU architecture for your dibby project, as well as the initial hostname and root password of the target devices. This file also enables you to specify a Debian preseed file and post-installation script, a custom package selection, custom tasks and a custom package mirror, using the following format:
 ```
 CONFIG_ARCH="armhf"
 CONFIG_HOSTNAME="myhostname"
@@ -50,7 +50,8 @@ CONFIG_ROOT_PASSWORD="myrootpassword"
 CONFIG_PRESEED="preseed.conf"
 CONFIG_POSTINST="postinst.sh"
 CONFIG_CUSTOM_PACKAGES="jackd2"
-CONFIG_CUSTOM_TASKS="openssh-server"
+CONFIG_CUSTOM_TASKS="raspberry-pi-3"
+CONFIG_CUSTOM_MIRROR="https://apt.64studio.net/"
 ```
 
 You can also pass options to `debootstrap` from the dibby project config file, including the mirror to obtain the Debian packages from, the base Debian suite for your project, and any Debian packages to exclude from the build:
@@ -74,7 +75,7 @@ nano ~/myproject/myconfig
 sudo ./dibby ~/myproject myconfig mydebian.img
 ```
 
-Please be aware that the step _Unpacking the base system..._ can take a long time, depending on the speed of your build host. 
+Please be aware that the step _Unpacking the base system..._ can take a long time, depending on the speed of your build host.
 
 ### Creating unique images
 
@@ -84,7 +85,9 @@ For example, you might wish to create a series of up-to-date Debian images which
 
 ### The tasks directory
 
-The purpose of tasks in dibby is to set up modular components containing Debian packages and configurations for them that work well together, without having to specify each package and configuration option every time you create a new dibby project. Inside the _tasks_ directory (installed to `/usr/share/dibby/tasks/` when using the Debian package of dibby) you will find scripts which are run from the main `dibby` script. You can use these ready-made task scripts as they are, modify them, or create as many new tasks as you need.
+The purpose of tasks in dibby is to set up modular components containing Debian packages and configurations for them that work well together, without having to specify each package and configuration option every time you create a new dibby project. These tasks can be generic, for any system, or they can target specific hardware such as the Raspberry Pi 3.
+
+Inside the _tasks_ directory (installed to `/usr/share/dibby/tasks/` when using the Debian package of dibby) you will find scripts which are run from the main `dibby` script. You can use these ready-made task scripts as they are, modify them, or create as many new tasks as you need.
 
 For example, during the development phase of your dibby project, you might wish to include an OpenSSH server in your build with remote root access by password to the target device. A script called `openssh-server.sh` is included in the _tasks_ directory for this purpose. (This approach is a more modular alternative to using `d-i preseed/late_command` in the preseed file, one which enables you to put your hacks for a particular package in the same task script which selects that package).
 
